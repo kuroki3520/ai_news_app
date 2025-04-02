@@ -3,7 +3,10 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+yarn.lock
 package-lock.json
+.pnp.*
+.npm
 
 # Go
 *.exe
@@ -11,20 +14,23 @@ package-lock.json
 *.dll
 *.so
 *.dylib
-
-# Binaries for programs and plugins
-*
-!backend/ # Keep backend directory itself
-!frontend/ # Keep frontend directory itself
-!agent/ # Keep agent directory itself
-!ai_news_app_requirements.md # Keep requirements file
-!README.md # Keep README
-!config.yaml # Keep configuration file
+*.test
+*.out
+/vendor/
+/bin/
+/build/
 
 # Environment variables
 .env
 .env.*
 !.env.example
+
+# IDE and Editor folders
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
 
 # OS generated files
 .DS_Store
@@ -33,4 +39,8 @@ package-lock.json
 .Spotlight-V100
 .Trashes
 ehthumbs.db
-Thumbs.db 
+Thumbs.db
+
+# Project specific
+/tmp/
+/logs/ 
