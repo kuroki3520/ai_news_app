@@ -1,0 +1,23 @@
+# News source configuration
+
+gnews:
+  # GNews API Key - Get from environment variable
+  apiKey: ${GNEWS_API_KEY}
+  language: "ja" # Example: Japanese
+  country: "jp"  # Example: Japan
+
+# List of RSS feeds to fetch
+rss:
+  feeds:
+    - "https://jp.techcrunch.com/feed/"
+    - "https://www.itmedia.co.jp/rss/2.0/news_aiplus.xml"
+    - "https://zenn.dev/topics/ai/feed"
+    # Add more RSS feed URLs here
+
+# Keywords for filtering news articles (used for both GNews and RSS titles/content)
+keywords:
+  - "AI"
+  - "人工知能"
+  - "機械学習"
+  - "ディープラーニング"
+  # Add more keywords here 

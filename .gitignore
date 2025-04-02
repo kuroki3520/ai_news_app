@@ -19,6 +19,7 @@ package-lock.json
 !agent/ # Keep agent directory itself
 !ai_news_app_requirements.md # Keep requirements file
 !README.md # Keep README
+!config.yaml # Keep configuration file
 
 # Environment variables
 .env
