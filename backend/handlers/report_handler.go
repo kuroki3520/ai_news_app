@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 
 	"github.com/kuroki3520/ai_news_app/backend/models"
 	"github.com/kuroki3520/ai_news_app/backend/services"
