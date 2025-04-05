@@ -12,21 +12,30 @@ import { generateNewsReport, sendReportCallback } from '../services/report';
  */
 export async function generateAiNewsHandler(req: Request, res: Response): Promise<void> {
   try {
-    // リクエストボディを検証
-    const { period, callbackUrl } = req.body as GenerateReportRequest;
+    console.log('Received request body:', req.body);
     
-    if (!period) {
-      res.status(400).json({ error: 'Missing required field: period' });
+    // バックエンドから送信されたリクエストを処理
+    // topic フィールドを受け取り、期間とコールバックURLに変換
+    const { topic, callbackUrl } = req.body;
+    
+    if (!topic) {
+      res.status(400).json({ error: 'Missing required field: topic' });
       return;
     }
     
+    // コールバックURLの検証
     if (!callbackUrl) {
-      res.status(400).json({ error: 'Missing required field: callbackUrl' });
-      return;
+      console.warn('No callback URL provided, using default');
     }
+    
+    // トピックから期間へのマッピング (仮の実装)
+    const period = '24h'; // デフォルトは24時間
+    
+    // バックエンドから提供されたコールバックURLを使用するか、デフォルトを使用
+    const finalCallbackUrl = callbackUrl || 'http://localhost:8080/api/internal/report-callback/placeholder';
     
     // 即座に受付応答を返す
-    res.status(202).json({ message: 'Task accepted' });
+    res.status(202).json({ message: 'Task accepted', topic: topic });
     
     // 以降の処理は非同期で実行（レスポンス後）
     setTimeout(async () => {
@@ -35,18 +44,19 @@ export async function generateAiNewsHandler(req: Request, res: Response): Promis
         const config = loadConfig();
         
         // レポートを生成
-        console.log(`Starting news report generation with period: ${period}`);
+        console.log(`Starting news report generation for topic: ${topic}, period: ${period}`);
+        console.log(`Will send callback to: ${finalCallbackUrl}`);
         const articles = await generateNewsReport(config, period);
         
         // 結果をコールバック
-        await sendReportCallback(callbackUrl, articles);
+        await sendReportCallback(finalCallbackUrl, articles);
       } catch (error) {
         console.error('Failed in async report generation:', error);
         
         // エラーをコールバック
         try {
           const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-          await sendReportCallback(callbackUrl, []);
+          await sendReportCallback(finalCallbackUrl, []);
         } catch (callbackError) {
           console.error('Failed to send error callback:', callbackError);
         }

@@ -23,6 +23,11 @@ func CreateReportTask(c *gin.Context) {
 		req.Period = "24h" // デフォルトは24時間
 	}
 
+	// topicのデフォルト値設定
+	if req.Topic == "" {
+		req.Topic = "technology" // デフォルトはtechnology
+	}
+
 	// タスクを作成
 	task, err := services.CreateTask()
 	if err != nil {
@@ -38,7 +43,7 @@ func CreateReportTask(c *gin.Context) {
 	}
 
 	// Mastraエージェントにレポート生成をリクエスト
-	err = mastraConfig.RequestReportGeneration(task.ID.String(), req.Period)
+	err = mastraConfig.RequestReportGeneration(task.ID.String(), req.Period, req.Topic)
 	if err != nil {
 		// エラーが発生した場合はタスクのステータスを失敗に更新
 		errMsg := err.Error()
@@ -105,4 +110,4 @@ func GetReport(c *gin.Context) {
 		GeneratedAt: report.GeneratedAt,
 		Articles:    report.Articles,
 	})
-} 
+}

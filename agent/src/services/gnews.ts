@@ -50,6 +50,6 @@ export async function fetchNewsFromGNews(config: Config, fromDate: Date): Promis
     } else {
       console.error('Failed to fetch news from GNews API:', error);
     }
-    return []; // エラー時は空の配列を返す
+    throw error;
   }
 } 

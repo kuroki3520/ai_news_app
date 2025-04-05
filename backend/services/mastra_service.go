@@ -38,22 +38,24 @@ func NewMastraServiceConfig() (*MastraServiceConfig, error) {
 
 // MastraServiceRequest Mastraサービスへのリクエスト構造体
 type MastraServiceRequest struct {
-	Period     string `json:"period"`      // 例: "24h", "7d"
+	Period      string `json:"period"`      // 例: "24h", "7d"
 	CallbackURL string `json:"callbackUrl"` // コールバックURL
+	Topic       string `json:"topic"`       // 例: "technology", "business"
 }
 
 // RequestReportGeneration Mastraエージェントにレポート生成をリクエストする
-func (c *MastraServiceConfig) RequestReportGeneration(taskID string, period string) error {
+func (c *MastraServiceConfig) RequestReportGeneration(taskID string, period string, topic string) error {
 	// エンドポイントURLを構築
 	url := fmt.Sprintf("%s/agent/generate-ai-news", c.BaseURL)
 
 	// コールバックURLを構築
 	callbackURL := fmt.Sprintf("http://localhost:8080/api/internal/report-callback/%s", taskID)
-	
+
 	// リクエストオブジェクトを作成
 	requestBody := MastraServiceRequest{
-		Period:     period,
+		Period:      period,
 		CallbackURL: callbackURL,
+		Topic:       topic,
 	}
 
 	// リクエストボディをJSONに変換
@@ -84,6 +86,8 @@ func (c *MastraServiceConfig) RequestReportGeneration(taskID string, period stri
 		return fmt.Errorf("Mastra service returned non-OK status: %d", resp.StatusCode)
 	}
 
+	fmt.Printf("Successfully sent request to Mastra with callback URL: %s\n", callbackURL)
+
 	// タスクのステータスを更新
 	return UpdateTaskStatus(taskID, models.TaskStatusRunning, nil, nil)
-} 
+}

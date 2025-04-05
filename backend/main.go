@@ -23,7 +23,7 @@ func main() {
 
 	// CORSミドルウェアを設定
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"}, // フロントエンドのURL
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:5173"}, // フロントエンドとAIエージェントのURL
 		AllowMethods:     []string{"GET", "POST"},
 		AllowHeaders:     []string{"Origin", "Content-Type"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -60,4 +60,4 @@ func main() {
 	if err := r.Run(":8080"); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
-} 
+}

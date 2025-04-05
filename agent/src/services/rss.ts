@@ -85,17 +85,19 @@ export async function fetchNewsFromRss(config: Config, fromDate: Date): Promise<
       return articles;
     } catch (error) {
       console.error(`Failed to fetch news from RSS feed ${feedUrl}:`, error);
-      return []; // エラー時は空の配列を返す
+      throw error;
     }
   });
   
   // 全てのフィードからの結果を待機
   const results = await Promise.all(feedPromises);
-  
+  console.log(`[fetchNewsFromRss] Promise.all completed. Result lengths: ${results.map(r => r.length)}`);
+
   // 結果を結合
   results.forEach(articles => {
     allArticles.push(...articles);
   });
-  
+
+  console.log(`[fetchNewsFromRss] Returning ${allArticles.length} articles combined.`);
   return allArticles;
 } 

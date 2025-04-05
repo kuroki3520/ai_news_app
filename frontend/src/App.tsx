@@ -177,7 +177,9 @@ const App: React.FC = () => {
             <p className="text-sm text-gray-600">生成日時: {formatDate(report.generatedAt)}</p>
           </div>
 
-          {report.articles.length === 0 ? (
+          {!report.articles ? (
+            <p className="text-gray-600 text-center py-4">記事データがありません。新しいレポートを生成してください。</p>
+          ) : report.articles.length === 0 ? (
             <p className="text-gray-600 text-center py-4">記事がありません。</p>
           ) : (
             <ul className="divide-y divide-gray-200">

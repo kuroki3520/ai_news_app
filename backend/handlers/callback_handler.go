@@ -46,8 +46,8 @@ func HandleReportCallback(c *gin.Context) {
 		}
 
 		// レポートの生成時間が未設定の場合は現在時刻を設定
-		if req.Report.GeneratedAt.IsZero() {
-			req.Report.GeneratedAt = time.Now()
+		if req.Report.GeneratedAt == "" {
+			req.Report.GeneratedAt = time.Now().Format(time.RFC3339Nano)
 		}
 
 		// レポートをデータベースに保存
@@ -91,4 +91,4 @@ func HandleReportCallback(c *gin.Context) {
 
 	// 成功レスポンスを返す
 	c.JSON(http.StatusOK, gin.H{"message": "Callback processed successfully"})
-} 
+}

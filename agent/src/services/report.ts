@@ -41,35 +41,38 @@ function sortArticlesByDate(articles: Article[]): Article[] {
  * @returns {Promise<Article[]>} 生成されたレポートの記事リスト
  */
 export async function generateNewsReport(config: Config, period: string): Promise<Article[]> {
+  console.log('[generateNewsReport] Starting report generation...');
   try {
     // 期間の開始日時を計算
     const fromDate = calculatePeriodStartDate(period);
-    console.log(`Generating news report from ${fromDate.toISOString()} to now`);
+    console.log(`[generateNewsReport] Generating news report from ${fromDate.toISOString()} to now`);
     
     // GNews APIから記事を取得
-    console.log('Fetching news from GNews API...');
+    console.log('[generateNewsReport] Fetching news from GNews API...');
     const gnewsArticles = await fetchNewsFromGNews(config, fromDate);
-    console.log(`Fetched ${gnewsArticles.length} articles from GNews API`);
+    console.log(`[generateNewsReport] Fetched ${gnewsArticles.length} articles from GNews API`);
     
     // RSSフィードから記事を取得
-    console.log('Fetching news from RSS feeds...');
+    console.log('[generateNewsReport] Fetching news from RSS feeds...');
     const rssArticles = await fetchNewsFromRss(config, fromDate);
-    console.log(`Fetched ${rssArticles.length} articles from RSS feeds`);
+    console.log(`[generateNewsReport] Fetched ${rssArticles.length} articles from RSS feeds`);
     
     // 全ての記事を結合
     const allArticles = [...gnewsArticles, ...rssArticles];
+    console.log(`[generateNewsReport] Combined total articles: ${allArticles.length}`);
     
     // 重複を除去
     const uniqueArticles = removeDuplicateArticles(allArticles);
-    console.log(`Removed duplicates: ${allArticles.length} -> ${uniqueArticles.length} articles`);
+    console.log(`[generateNewsReport] Removed duplicates: ${allArticles.length} -> ${uniqueArticles.length} articles`);
     
     // 日付でソート
     const sortedArticles = sortArticlesByDate(uniqueArticles);
-    console.log(`Generated report with ${sortedArticles.length} articles`);
+    console.log(`[generateNewsReport] Generated report with ${sortedArticles.length} articles`);
     
+    console.log(`[generateNewsReport] Report generation successful. Returning ${sortedArticles.length} articles.`);
     return sortedArticles;
   } catch (error) {
-    console.error('Failed to generate news report:', error);
+    console.error('[generateNewsReport] Failed to generate news report:', error);
     throw error;
   }
 }
@@ -81,8 +84,9 @@ export async function generateNewsReport(config: Config, period: string): Promis
  * @returns {Promise<void>}
  */
 export async function sendReportCallback(callbackUrl: string, articles: Article[]): Promise<void> {
+  console.log('[sendReportCallback] Starting report callback...');
   try {
-    console.log(`Sending report callback to ${callbackUrl} with ${articles.length} articles`);
+    console.log(`[sendReportCallback] Sending report callback to ${callbackUrl} with ${articles.length} articles`);
     
     // レポートデータを作成
     const reportData: CallbackReport = {
@@ -96,21 +100,22 @@ export async function sendReportCallback(callbackUrl: string, articles: Article[
     // コールバックURLにPOSTリクエスト
     await axios.post(callbackUrl, reportData);
     
-    console.log('Report callback sent successfully');
+    console.log('[sendReportCallback] Report callback sent successfully.');
   } catch (error) {
-    console.error('Failed to send report callback:', error);
+    console.error('[sendReportCallback] Failed to send report callback (primary attempt):', error);
     
     // エラー時は失敗ステータスを送信
     try {
+      console.log('[sendReportCallback] Attempting to send error callback...');
       const errorReport: CallbackReport = {
         status: 'FAILED',
         error: error instanceof Error ? error.message : 'Unknown error',
       };
       
       await axios.post(callbackUrl, errorReport);
-      console.log('Error report callback sent');
+      console.log('[sendReportCallback] Error report callback sent.');
     } catch (callbackError) {
-      console.error('Failed to send error callback:', callbackError);
+      console.error('[sendReportCallback] Failed to send error callback:', callbackError);
     }
   }
 } 
