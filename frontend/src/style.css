@@ -3,9 +3,9 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  /* Default to light mode colors */
+  color: #213547;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -70,7 +70,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #f9f9f9; /* Light mode button */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -82,15 +82,25 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Dark mode styles */
+html.dark body {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+}
+
+html.dark a {
+  color: #9a9eff; /* Lighter blue for dark mode */
+}
+
+html.dark a:hover {
+  color: #7d85ff; /* Slightly lighter hover for dark mode links */
+}
+
+html.dark button {
+  background-color: #3a3a3a; /* Dark mode button */
+  color: rgba(255, 255, 255, 0.87);
+}
+
+html.dark button:hover {
+  border-color: #9a9eff;
 }
